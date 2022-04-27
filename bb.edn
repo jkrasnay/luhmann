@@ -1,0 +1,3 @@
+{:tasks
+ {nrepl {:doc "Starts the nREPL with dev dependencies"
+         :task (clojure "-M:nrepl")}}}

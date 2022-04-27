@@ -1,0 +1,17 @@
+= Luhmann
+
+Luhmann is a lightweight link:https://en.wikipedia.org/wiki/Zettelkasten[Zettelkasten]
+system written in Clojure. Luhmann runs as a web server that watches a directory
+of Asciidoc files and provides the following features:
+
+* A pre-rendered web site generated from the Asciidoc.
+* A searchable index of all the files.
+* A database of all the files, including tracking of backlinks.
+* An HTTP/JSON API for querying the index and database.
+
+== Motivation
+
+I really wanted to start building my own Zettelkasten but I had already started
+note-taking using Asciidoc and Neovim. I looked at
+link:https://obsidian.md/[Obsidian] but I strongly prefer Asciidoc to Markdown
+and editing text in Neovim to a web-based editor.
