@@ -1,0 +1,7 @@
+= Example Zettelkasten
+
+This is an example Zettelkasten to demonstrate Luhmann.
+
+== References
+
+* xref:apple.adoc[Apple]

@@ -1,13 +1,17 @@
 (ns luhmann.core)
 
+;; Config as of the last system start
+(defonce config (atom nil))
+
+
 (defn root-dir
   "Returns the root directory for the Zettelkasten.
   "
-  [config]
-  (:root-dir config))
+  []
+  (:root-dir @config))
 
 (defn luhmann-dir
   "Returns the directory where Luhmann keeps its files.
   "
-  [config]
-  (str (root-dir config) "/.luhmann"))
+  []
+  (str (root-dir) "/.luhmann"))

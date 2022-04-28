@@ -24,7 +24,7 @@
 
 
 (defn start
-  [config]
+  [_config]
   ;; Props to https://akhikhl.wordpress.com/2013/07/11/programmatic-configuration-of-slf4jlogback/
   (let [context (doto (LoggerFactory/getILoggerFactory)
                   (.reset))
@@ -39,12 +39,12 @@
                    (.setName "logFile")
                    (.setEncoder encoder)
                    (.setAppend true)
-                   (.setFile (str (luhmann/luhmann-dir config) "/logs/luhmann.log")))
+                   (.setFile (str (luhmann/luhmann-dir) "/logs/luhmann.log")))
 
         rolling-policy (doto (TimeBasedRollingPolicy.)
                         (.setContext context)
                         (.setParent appender)
-                        (.setFileNamePattern (str (luhmann/luhmann-dir config) "/logs/luhmann-%d{yyyy-MM-dd}.log"))
+                        (.setFileNamePattern (str (luhmann/luhmann-dir) "/logs/luhmann-%d{yyyy-MM-dd}.log"))
                         (.setMaxHistory 3)
                         (.start))
 
