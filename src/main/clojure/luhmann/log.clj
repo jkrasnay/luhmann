@@ -10,9 +10,13 @@
 
 (def log (LoggerFactory/getLogger "luhmann"))
 
+(defn error
+  [msg ^Throwable t]
+  (.error log msg t))
+
 (defn info
   [msg & args]
-  (.info log msg (into-array args)))
+  (.info log msg (into-array (map str args))))
 
 
 ;;============================================================
