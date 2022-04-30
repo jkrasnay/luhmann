@@ -20,14 +20,10 @@
 
 
 ;;============================================================
-;; Start/stop
+;; Configure
 ;;
 
-(defn stop
-  [])
-
-
-(defn start
+(defn configure
   [_config]
   ;; Props to https://akhikhl.wordpress.com/2013/07/11/programmatic-configuration-of-slf4jlogback/
   (let [context (doto (LoggerFactory/getILoggerFactory)
@@ -59,6 +55,4 @@
     (doto (.getLogger context Logger/ROOT_LOGGER_NAME)
       (.addAppender appender)
       (.setLevel Level/INFO)
-      (.setAdditive false))
-
-    (info "=== Logging started ===")))
+      (.setAdditive false))))
