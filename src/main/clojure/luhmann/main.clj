@@ -31,9 +31,6 @@
   (reset! running true)
   (log/info "Luhmann started"))
 
-#_(start {:root-dir "/Users/john/ws/luhmann/example"})
-#_(stop)
-
 (defn -main
   [& args]
   (let [root-path (first args)
@@ -52,3 +49,6 @@
         (println "Starting Luhmann in" (.getCanonicalPath root-dir))
         (start {:root-dir (.getCanonicalPath root-dir)})
         (println "Luhmann started at http://localhost:2022")))))
+
+
+#_(start {:root-dir "/Users/john/ws/luhmann/example"})

@@ -1,18 +1,30 @@
 (ns luhmann.webserver
   (:require
+    [clojure.string :as string]
     [luhmann.core :as luhmann]
-    [org.httpkit.server :refer [run-server]]
+    [luhmann.watcher :as watcher]
+    [org.httpkit.server :refer [as-channel run-server send!]]
     [ring.middleware.file :refer [wrap-file]]))
 
 
 (defonce server (atom nil))
 
+(defonce channels (atom #{}))
 
-(defn test-handler
-  [_req]
-  {:status 200
-   :headers {"Content-Type" "text/html"}
-   :body "<h1>Hello, world</h1>"})
+(defn handler
+  [req]
+  (cond
+
+    (= "/ws" (:uri req))
+    (as-channel req {:on-open (fn [ch]
+                                (swap! channels conj ch))
+                     :on-close (fn [ch _]
+                                 (swap! channels disj ch))})
+
+    :else
+    {:status 404
+     :headers {"Content-Type" "text/plain"}
+     :body "Not found"}))
 
 
 (defn stop
@@ -24,6 +36,24 @@
 (defn start
   [_config]
   (stop)
-  (run-server (-> test-handler
-                  (wrap-file (luhmann/site-dir)))
-              {:port 2022}))
+  (reset! server (run-server (-> handler
+                                 (wrap-file (luhmann/site-dir)))
+                             {:port 2022})))
+
+
+;;============================================================
+;; Registrations
+;;
+
+(defn reload-browser
+  []
+  (doseq [ch @channels]
+    (send! ch "reload")))
+
+(watcher/reg-listener
+  :webserver
+  (fn [{:keys [event path]}]
+    (let [full-path (str (java.io.File. (luhmann/root-dir) path))]
+      (when (and (#{:create :modify} event)
+                 (string/starts-with? full-path (luhmann/site-dir)))
+        (reload-browser)))))
