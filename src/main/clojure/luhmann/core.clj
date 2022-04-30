@@ -10,8 +10,14 @@
   []
   (:root-dir @config))
 
+
 (defn luhmann-dir
   "Returns the directory where Luhmann keeps its files.
   "
   []
   (str (root-dir) "/.luhmann"))
+
+
+(defn site-dir
+  []
+  (str (luhmann-dir) "/site"))

@@ -9,14 +9,9 @@
 
 (defonce asciidoctor (atom nil))
 
-(defn site-dir
-  []
-  (str (luhmann/luhmann-dir) "/site"))
-
-
 (defn build-site
   ([]
-   (build-site @asciidoctor (luhmann/root-dir) (site-dir)))
+   (build-site @asciidoctor (luhmann/root-dir) (luhmann/site-dir)))
   ([asciidoctor root-dir site-dir]
    (log/info "Building site in {}" site-dir)
    (let [files (AsciiDocDirectoryWalker. root-dir)
@@ -28,7 +23,7 @@
 
 (defn convert-file
   ([path]
-   (convert-file path @asciidoctor (luhmann/root-dir) (site-dir)))
+   (convert-file path @asciidoctor (luhmann/root-dir) (luhmann/site-dir)))
   ([path asciidoctor root-dir site-dir]
    (when (.endsWith path ".adoc")
      (log/info "Converting file {}" path)
