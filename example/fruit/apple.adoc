@@ -2,3 +2,5 @@
 
 An apple is an edible fruit produced by an apple tree (Malus domestica).
 
+.Some Apple Picture
+image::apple.jpg[Some Apple Picture]

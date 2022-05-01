@@ -13,6 +13,7 @@
   [_]
   (b/delete {:path "target"}))
 
+
 (defn compile-java
   [_]
   (b/javac {:src-dirs ["src/main/java"]
@@ -21,9 +22,11 @@
             ;:javac-opts ["-source" "8" "-target" "8"]
             }))
 
+
 (defn uberjar
   [_]
   (clean nil)
+  (compile-java nil)
   (b/copy-dir {:src-dirs ["src/main/clojure" java-class-dir]
                :target-dir class-dir})
   (b/compile-clj {:basis basis

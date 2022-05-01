@@ -1,9 +1,11 @@
 {:paths ["src/main/clojure" "target/java-classes"]
 
- :deps {ch.qos.logback/logback-classic {:mvn/version "1.2.11"}
+ :deps {babashka/fs {:mvn/version "0.1.4"}
+        ch.qos.logback/logback-classic {:mvn/version "1.2.11"}
         io.methvin/directory-watcher {:mvn/version "0.15.1"}
         http-kit/http-kit {:mvn/version "2.5.3"}
         org.asciidoctor/asciidoctorj {:mvn/version "2.5.2"}
+        org.clojure/tools.cli {:mvn/version "1.0.206"}
         ring/ring-core {:mvn/version "1.9.5"}}
 
  :aliases

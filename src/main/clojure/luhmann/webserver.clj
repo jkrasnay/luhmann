@@ -34,11 +34,11 @@
     (reset! server nil)))
 
 (defn start
-  [_config]
+  [config]
   (stop)
   (reset! server (run-server (-> handler
                                  (wrap-file (luhmann/site-dir)))
-                             {:port 2022})))
+                             {:port (:port config)})))
 
 
 ;;============================================================

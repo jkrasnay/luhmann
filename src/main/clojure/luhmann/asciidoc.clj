@@ -1,42 +1,48 @@
 (ns luhmann.asciidoc
   (:require
+    [babashka.fs :as fs]
+    [clojure.string :as string]
     [luhmann.core :as luhmann]
     [luhmann.log :as log]
     [luhmann.watcher :as watcher])
   (:import
     [luhmann RefreshDocinfoProcessor]
-    [org.asciidoctor Asciidoctor$Factory Options SafeMode]
-    [org.asciidoctor.jruby AsciiDocDirectoryWalker]))
+    [org.asciidoctor Asciidoctor$Factory Options SafeMode]))
 
 (defonce asciidoctor (atom nil))
 
 (defn options
-  [site-dir]
+  [dest-file]
   (doto (Options.)
     (.setHeaderFooter true)
     (.setMkDirs true)
     (.setSafe SafeMode/SERVER)
-    (.setToDir site-dir)))
-
-(defn build-site
-  ([]
-   (build-site @asciidoctor (luhmann/root-dir) (luhmann/site-dir)))
-  ([asciidoctor root-dir site-dir]
-   (log/info "Building site in {}" site-dir)
-   (let [files (AsciiDocDirectoryWalker. root-dir)
-        options (options site-dir)]
-    (.convertDirectory asciidoctor files options))))
+    (.setToFile (str dest-file))))
 
 
 (defn convert-file
   ([path]
    (convert-file path @asciidoctor (luhmann/root-dir) (luhmann/site-dir)))
   ([path asciidoctor root-dir site-dir]
-   (when (.endsWith path ".adoc")
-     (log/info "Converting file {}" path)
-     (let [file (java.io.File. root-dir path)
-           options (options site-dir)]
-       (.convertFile asciidoctor file options)))))
+   (when-not (string/starts-with? path luhmann/luhmann-dir-prefix)
+     (let [src (fs/file root-dir path)]
+       (if (.endsWith path ".adoc")
+         (let [dest (fs/file site-dir (string/replace path #".adoc$" ".html"))]
+           (log/info "Converting file {}" path)
+           (.convertFile asciidoctor src (options dest)))
+         (do (log/info "Copying file {}" path)
+             (fs/copy src (fs/file site-dir path) {:replace-existing true})))))))
+
+
+(defn build-site
+  ([]
+   (build-site (luhmann/root-dir) (luhmann/site-dir)))
+  ([root-dir site-dir]
+   (log/info "Building site in {}" site-dir)
+   (->> (fs/glob root-dir "**")
+        (filter #(not (fs/directory? %)))
+        (map #(convert-file (str (fs/relativize root-dir %))))
+        doall)))
 
 
 ;;============================================================

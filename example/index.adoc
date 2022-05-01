@@ -4,4 +4,5 @@ This is an example Zettelkasten to demonstrate Luhmann.
 
 == References
 
-* xref:apple.adoc[Apple]
+* xref:fruit/apple.adoc[Apple]
+* xref:fruit/orange.adoc[Orange]

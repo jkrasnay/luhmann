@@ -1,5 +1,6 @@
 (ns luhmann.main
   (:require
+    [clojure.tools.cli :refer [parse-opts]]
     [luhmann.asciidoc :as asciidoc]
     [luhmann.core :as luhmann]
     [luhmann.log :as log]
@@ -31,24 +32,55 @@
   (reset! running true)
   (log/info "Luhmann started"))
 
+
+;;============================================================
+;; CLI
+;;
+
+(def cli-options
+  [["-p" "--port=PORT" "Web server port number"
+    :default 2022
+    :parse-fn #(Integer/parseInt %)
+    :validate [#(< 0 % 0x10000) "Must be a number between 0 and 65535"]]])
+
 (defn -main
   [& args]
-  (let [root-path (first args)
+  (let [{:keys [options
+                arguments
+                summary
+                errors]} (parse-opts args cli-options)
+        root-path (first arguments)
         root-dir (when root-path
                    (java.io.File. root-path))]
     (cond
 
+      (seq errors)
+      (do (doseq [e errors]
+            (println e))
+          (println)
+          (println "Supported options:")
+          (println)
+          (println summary))
+
       (nil? root-dir)
-      (println "Usage: java -jar luhmann.jar root-dir")
+      (do (println "Usage: java -jar luhmann.jar (options) root-dir")
+          (println)
+          (println "Supported options:")
+          (println)
+          (println summary))
 
       (not (.exists root-dir))
-      (println "File" root-path "does not exist")
+      (println "Directory" root-path "does not exist")
+
+      (not (.isDirectory root-dir))
+      (println root-path "is not a directory")
 
       :else
       (do
         (println "Starting Luhmann in" (.getCanonicalPath root-dir))
-        (start {:root-dir (.getCanonicalPath root-dir)})
-        (println "Luhmann started at http://localhost:2022")))))
+        (start {:root-dir (.getCanonicalPath root-dir)
+                :port (:port options)})
+        (println (str "Luhmann started at http://localhost:" (:port options)))))))
 
-
-#_(start {:root-dir "/Users/john/ws/luhmann/example"})
+#_
+(start {:root-dir "/Users/john/ws/luhmann/example" :port 2022})
