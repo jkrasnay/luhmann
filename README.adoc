@@ -1,17 +1,75 @@
 = Luhmann
 
-Luhmann is a lightweight link:https://en.wikipedia.org/wiki/Zettelkasten[Zettelkasten]
-system written in Clojure. Luhmann runs as a web server that watches a directory
-of Asciidoc files and provides the following features:
+Luhmann turns a directory of link:https://asciidoc.org/[Asciidoc] files into a
+personal link:https://en.wikipedia.org/wiki/Zettelkasten[Zettelkasten]
+note-taking system.
+
+Luhmann runs as a web server that watches a directory of Asciidoc files and
+provides the following features:
 
 * A pre-rendered web site generated from the Asciidoc.
 * A searchable index of all the files.
 * A database of all the files, including tracking of backlinks.
 * An HTTP/JSON API for querying the index and database.
 
-== Motivation
+== Status
 
-I really wanted to start building my own Zettelkasten but I had already started
-note-taking using Asciidoc and Neovim. I looked at
-link:https://obsidian.md/[Obsidian] but I strongly prefer Asciidoc to Markdown
-and editing text in Neovim to a web-based editor.
+Pre-alpha
+
+.Current Features
+* Convert Asciidoc to HTML
+* Serve HTML files via a web server
+* Re-load browser when documents are saved
+* Index documents for full-text search with Lucene
+
+.Upcoming Features
+* Build with GitHub Actions
+* Make release JARs available
+* UI to search for notes
+* Display of back-links to notes
+* REST API to query notes and link graph for editor integration
+* Neovim plugin for inserting links, finding back-links to the current page
+
+== Usage
+
+To run Luhmann you need to have Java installed on your computer.
+
+Download the Luhmann JAR from the Releases page and run it as follows.
+
+NOTE: I don't yet have the releases working. If you want to try Luhmann you'll
+have to build it yourself as described under <<_implementation_details>>.
+
+----
+java -jar luhman-0.1.23.jar path-to-my-dir
+----
+
+`path-to-my-dir` is the filesystem path to your Asciidoc files.  All your
+Asciidoc files should have the extension `.adoc`, and there should
+be an `index.adoc` that Luhmann will use as a starting point.
+
+NOTE: For now, `path-to-my-dir` must not contain any segments containing `..`.
+
+Now point your browser at http://localhost:2022 to view your generated
+Zettelkasten.
+
+Whenever you save a file, the browser will refresh to show the updated content.
+
+
+== Implementation Details
+
+Luhmann is written in Clojure.
+
+To build Luhmann, install Clojure, clone this repo, and run the following.
+
+----
+clj -T:build uberjar
+----
+
+The generated uberjar can be found under the `target` directory.
+
+AsciidoctorJ is used to convert Asciidoc to HTML. The generated site is kept
+under `.luhmann/site`.
+
+A searchable Lucene index is kept under `.luhmann/lucene`.
+
+Logs of Luhmann's operation are kept under `.luhmann/logs`.
