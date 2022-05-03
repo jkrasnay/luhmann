@@ -1,6 +1,5 @@
 (ns luhmann.webserver
   (:require
-    [clojure.string :as string]
     [luhmann.core :as luhmann]
     [luhmann.watcher :as watcher]
     [org.httpkit.server :refer [as-channel run-server send!]]
@@ -53,7 +52,6 @@
 (watcher/reg-listener
   :webserver
   (fn [{:keys [event path]}]
-    (let [full-path (str (java.io.File. (luhmann/root-dir) path))]
-      (when (and (#{:create :modify} event)
-                 (string/starts-with? full-path (luhmann/site-dir)))
-        (reload-browser)))))
+    (when (and (#{:create :modify} event)
+               (luhmann/site-path? path))
+      (reload-browser))))

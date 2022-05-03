@@ -30,8 +30,10 @@
          (let [dest (fs/file site-dir (string/replace path #".adoc$" ".html"))]
            (log/info "Converting file {}" path)
            (.convertFile asciidoctor src (options dest)))
-         (do (log/info "Copying file {}" path)
-             (fs/copy src (fs/file site-dir path) {:replace-existing true})))))))
+         (let [dest (fs/file site-dir path)]
+           (log/info "Copying file {}" path)
+           (fs/create-dirs (fs/parent dest))
+           (fs/copy src dest {:replace-existing true})))))))
 
 
 (defn build-site

@@ -4,9 +4,14 @@
         ch.qos.logback/logback-classic {:mvn/version "1.2.11"}
         io.methvin/directory-watcher {:mvn/version "0.15.1"}
         http-kit/http-kit {:mvn/version "2.5.3"}
+        org.apache.lucene/lucene-core {:mvn/version "9.1.0"}
+        org.apache.lucene/lucene-queryparser {:mvn/version "9.1.0"}
         org.asciidoctor/asciidoctorj {:mvn/version "2.5.2"}
         org.clojure/tools.cli {:mvn/version "1.0.206"}
-        ring/ring-core {:mvn/version "1.9.5"}}
+        org.jsoup/jsoup {:mvn/version "1.14.3"}
+        ring/ring-core {:mvn/version "1.9.5"}
+        }
+
 
  :aliases
  {:build {:deps {io.github.clojure/tools.build {:git/tag "v0.8.1" :git/sha "7d40500"}}
