@@ -12,6 +12,9 @@ provides the following features:
 * A database of all the files, including tracking of backlinks.
 * An HTTP/JSON API for querying the index and database.
 
+Luhmann is licensed under the MIT licence.
+
+
 == Status
 
 Pre-alpha
@@ -37,7 +40,7 @@ To run Luhmann you need to have Java installed on your computer.
 Download the Luhmann JAR from the Releases page and run it as follows.
 
 NOTE: I don't yet have the releases working. If you want to try Luhmann you'll
-have to build it yourself as described under <<_implementation_details>>.
+have to build it yourself as described under Implementation Details.
 
 ----
 java -jar luhman-0.1.23.jar path-to-my-dir
