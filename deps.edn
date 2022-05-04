@@ -3,6 +3,7 @@
  :deps {babashka/fs {:mvn/version "0.1.4"}
         ch.qos.logback/logback-classic {:mvn/version "1.2.11"}
         io.methvin/directory-watcher {:mvn/version "0.15.1"}
+        hiccup/hiccup {:mvn/version "2.0.0-alpha2"}
         http-kit/http-kit {:mvn/version "2.5.3"}
         org.apache.lucene/lucene-core {:mvn/version "9.1.0"}
         org.apache.lucene/lucene-queryparser {:mvn/version "9.1.0"}
