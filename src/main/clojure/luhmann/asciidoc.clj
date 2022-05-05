@@ -41,6 +41,8 @@
    (build-site (luhmann/root-dir) (luhmann/site-dir)))
   ([root-dir site-dir]
    (log/info "Building site in {}" site-dir)
+   (println "Rebuilding web site")
+   (fs/delete-tree site-dir)
    (->> (fs/glob root-dir "**")
         (filter #(not (fs/directory? %)))
         (map #(convert-file (str (fs/relativize root-dir %))))
