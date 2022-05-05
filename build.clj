@@ -27,7 +27,7 @@
   [_]
   (clean nil)
   (compile-java nil)
-  (b/copy-dir {:src-dirs ["src/main/clojure" java-class-dir]
+  (b/copy-dir {:src-dirs ["src/main/clojure" "src/main/resources" java-class-dir]
                :target-dir class-dir})
   (b/compile-clj {:basis basis
                   :src-dirs ["src/main/clojure"]

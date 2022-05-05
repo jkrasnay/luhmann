@@ -128,22 +128,18 @@
 ;; Resources
 ;;
 
-(def resources
+(def public-resources
   ["luhmann.css"])
-
 
 (defn copy-resources
   []
-  (doseq [resource resources]
+  (doseq [resource public-resources]
     (let [dest (fs/file (luhmann/site-dir) resource)]
       (fs/create-dirs (fs/parent dest))
-      (fs/copy
-        (io/resource (str "public/" resource))
-        dest
-        {:replace-existing true}))))
-
+      (io/copy (io/input-stream (io/resource (str "public/" resource))) dest))))
 
 #_(copy-resources)
+
 
 ;;============================================================
 ;; Web Server
