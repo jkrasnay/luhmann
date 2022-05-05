@@ -65,6 +65,18 @@
 #_(index-file "fruit/orange.html")
 
 
+(defn rebuild-index
+  []
+  (log/info "Rebuilding index")
+  (println "Rebuilding index")
+  (fs/delete-tree (lucene-dir))
+  (let [site-dir (luhmann/site-dir)
+        i (inc (count site-dir))]
+    (doseq [path (fs/glob site-dir "**.html")]
+      (let [rel-path (subs (str path) i)]
+        (index-file rel-path)))))
+
+
 (defn delete-file
   "Deletes a file with the given relative path from the index.
   "

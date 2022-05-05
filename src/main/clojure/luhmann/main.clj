@@ -4,6 +4,7 @@
     [luhmann.asciidoc :as asciidoc]
     [luhmann.core :as luhmann]
     [luhmann.log :as log]
+    [luhmann.lucene :as lucene]
     [luhmann.watcher :as watcher]
     [luhmann.webserver :as webserver])
   [:gen-class])
@@ -27,6 +28,7 @@
   (log/configure config)
   (log/info "Starting Luhmann in {}" (luhmann/root-dir))
   (asciidoc/start config)
+  (lucene/rebuild-index)
   (webserver/start config)
   (watcher/start config)
   (reset! running true)
