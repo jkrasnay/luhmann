@@ -14,9 +14,9 @@
 (defn options
   [dest-file]
   (doto (Options.)
-    (.setHeaderFooter true)
+    ;(.setHeaderFooter true)
     (.setMkDirs true)
-    (.setSafe SafeMode/SERVER)
+    ;(.setSafe SafeMode/SERVER)
     (.setToFile (str dest-file))))
 
 

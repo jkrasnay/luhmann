@@ -1,0 +1,48 @@
+/* Luhmann CSS */
+
+:root {
+  /* See https://tailwindcolor.com/ */
+  --banner-bg: #292524; /* warm gray 800 */
+  --banner-fg: #E7E5E4; /* warm gray 200 */
+}
+
+body { margin: 0; }
+form { margin: 0; }
+
+.banner {
+  background-color: var(--banner-bg);
+  color: var(--banner-fg);
+
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+
+  padding: 16px;
+}
+
+.banner .logo {
+  flex: auto;
+  font-size: 28px;
+}
+
+.banner .logo a {
+  color: var(--banner-fg);
+  text-decoration: none;
+}
+
+.banner input {
+  background-color: var(--banner-fg);
+  color: var(--banner-bg);
+
+  border: none;
+  border-radius: 8px;
+
+  padding: 8px 12px;
+}
+
+#header, #content, #footer {
+  box-sizing: border-box;
+  padding: 0 16px;
+  max-width: 900px;
+  margin: 0 auto;
+}

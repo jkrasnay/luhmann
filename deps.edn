@@ -1,4 +1,4 @@
-{:paths ["src/main/clojure" "target/java-classes"]
+{:paths ["src/main/clojure" "src/main/resources" "target/java-classes"]
 
  :deps {babashka/fs {:mvn/version "0.1.4"}
         ch.qos.logback/logback-classic {:mvn/version "1.2.11"}
