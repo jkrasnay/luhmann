@@ -97,22 +97,17 @@
   [handler req]
   (let [resp (handler req)
         body (:body resp)]
-    (println "------------------------")
-    (println "uri" (:uri req))
-    (println "status" (:status resp))
-    (println "content-type" (content-type resp))
     (if (and (= 200 (:status resp))
              (= "text/html" (content-type resp)))
       (if-let [doc (cond
                      (instance? File body) (Jsoup/parse ^File body "utf-8")
                      (instance? String body) (Jsoup/parse ^String body))]
         (do
-          (println "munging" (:uri req))
           (-> doc .head (.append "<link rel='stylesheet' href='/luhmann.css'>"))
           (-> doc .body (.prepend banner-html))
           (assoc resp :body (.outerHtml doc)))
-        (do (println "not munging 1") resp))
-      (do (println "not munging 2") resp))))
+        resp)
+      resp)))
 
 
 (defn wrap-chrome
