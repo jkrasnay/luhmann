@@ -67,6 +67,7 @@
   (-> @asciidoctor
       .javaExtensionRegistry
       (.docinfoProcessor RefreshDocinfoProcessor))
+  (.requireLibrary @asciidoctor (into-array ["asciidoctor-diagram"]))
   (build-site))
 
 
