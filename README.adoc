@@ -24,11 +24,9 @@ Pre-alpha
 * Serve HTML files via a web server
 * Re-load browser when documents are saved
 * Index documents for full-text search with Lucene
+* UI to search for notes
 
 .Upcoming Features
-* Build with GitHub Actions
-* Make release JARs available
-* UI to search for notes
 * Display of back-links to notes
 * REST API to query notes and link graph for editor integration
 * Neovim plugin for inserting links, finding back-links to the current page
@@ -39,11 +37,8 @@ To run Luhmann you need to have Java installed on your computer.
 
 Download the Luhmann JAR from the Releases page and run it as follows.
 
-NOTE: I don't yet have the releases working. If you want to try Luhmann you'll
-have to build it yourself as described under Implementation Details.
-
 ----
-java -jar luhman-0.1.23.jar path-to-my-dir
+java -jar luhman-0.1.19.jar path-to-my-dir
 ----
 
 `path-to-my-dir` is the filesystem path to your Asciidoc files.  All your
