@@ -7,9 +7,10 @@
     [luhmann.watcher :as watcher]
     )
   (:import
+    [org.apache.lucene.analysis.standard StandardAnalyzer]
     [org.apache.lucene.document Document Field$Store StringField TextField]
     [org.apache.lucene.index DirectoryReader IndexWriter IndexWriterConfig IndexWriterConfig$OpenMode Term]
-    [org.apache.lucene.queryparser.flexible.standard StandardQueryParser]
+    [org.apache.lucene.queryparser.classic MultiFieldQueryParser]
     [org.apache.lucene.search IndexSearcher ScoreDoc]
     [org.apache.lucene.store FSDirectory]
     [org.jsoup Jsoup]))
@@ -98,8 +99,9 @@
   (with-open [dir (FSDirectory/open (fs/path (lucene-dir)))
               reader (DirectoryReader/open dir)]
     (let [searcher (IndexSearcher. reader)
-          query-parser (StandardQueryParser.)
-          query (.parse query-parser q "body") ; TODO how to also search title, path? "body" is the "default field"; maybe those others are also searched?
+          ;; TODO maybe boost title a bit?
+          query-parser (MultiFieldQueryParser. (into-array ["title" "body"]) (StandardAnalyzer.))
+          query (.parse query-parser q)
           ]
       (mapv (fn [^ScoreDoc score-doc]
               (let [doc (.doc searcher (.-doc score-doc))]
