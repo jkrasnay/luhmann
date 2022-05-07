@@ -105,6 +105,7 @@
         (do
           (-> doc .head (.append "<link rel='stylesheet' href='/luhmann.css'>"))
           (-> doc .body (.prepend banner-html))
+          (-> doc .head (.append "<script src='/luhmann.js'></script>"))
           (assoc resp :body (.outerHtml doc)))
         resp)
       resp)))
@@ -124,7 +125,8 @@
 ;;
 
 (def public-resources
-  ["luhmann.css"])
+  ["luhmann.css"
+   "luhmann.js"])
 
 (defn copy-resources
   []

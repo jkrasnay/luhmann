@@ -6,17 +6,14 @@
     [luhmann.log :as log]
     [luhmann.watcher :as watcher])
   (:import
-    [luhmann RefreshDocinfoProcessor]
-    [org.asciidoctor Asciidoctor$Factory Options SafeMode]))
+    [org.asciidoctor Asciidoctor$Factory Options]))
 
 (defonce asciidoctor (atom nil))
 
 (defn options
   [dest-file]
   (doto (Options.)
-    ;(.setHeaderFooter true)
     (.setMkDirs true)
-    ;(.setSafe SafeMode/SERVER)
     (.setToFile (str dest-file))))
 
 
@@ -64,9 +61,6 @@
   [_config]
   (stop)
   (reset! asciidoctor (Asciidoctor$Factory/create))
-  (-> @asciidoctor
-      .javaExtensionRegistry
-      (.docinfoProcessor RefreshDocinfoProcessor))
   (.requireLibrary @asciidoctor (into-array ["asciidoctor-diagram"]))
   (build-site))
 
