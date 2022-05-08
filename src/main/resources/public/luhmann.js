@@ -8,7 +8,7 @@ function focusSearch () {
 }
 
 function searchKeyListener (e) {
-    if (e.key === '\\') {
+    if (e.key === '/') {
         e.preventDefault();
         focusSearch();
     }
