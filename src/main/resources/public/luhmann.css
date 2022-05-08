@@ -46,3 +46,13 @@ form { margin: 0; }
   max-width: 900px;
   margin: 0 auto;
 }
+
+.searchResult {
+  margin-bottom: 16px;
+}
+
+.searchResult a {
+  display: block;
+  font-weight: bold;
+}
+

@@ -11,7 +11,8 @@
     [org.apache.lucene.document Document Field$Store StringField TextField]
     [org.apache.lucene.index DirectoryReader IndexWriter IndexWriterConfig IndexWriterConfig$OpenMode Term]
     [org.apache.lucene.queryparser.classic MultiFieldQueryParser]
-    [org.apache.lucene.search IndexSearcher ScoreDoc]
+    [org.apache.lucene.search IndexSearcher Query ScoreDoc]
+    [org.apache.lucene.search.highlight Highlighter QueryScorer SimpleHTMLFormatter TextFragment TokenSources]
     [org.apache.lucene.store FSDirectory]
     [org.jsoup Jsoup]))
 
@@ -94,6 +95,26 @@
 #_(delete-file "index.html")
 #_(delete-file "fruit/apple.html")
 
+(defn summarize
+  "Returns a fragment of HTML that summarizes the given text, surrounding
+  relevant terms with bold tags.
+  "
+  [doc-id ^Query query ^IndexSearcher searcher]
+  (let [formatter (SimpleHTMLFormatter.)
+        highlighter (Highlighter. formatter (QueryScorer. query))
+        analyzer (StandardAnalyzer.)
+        token-stream (TokenSources/getAnyTokenStream (.getIndexReader searcher) doc-id "body" analyzer)
+        text (-> searcher
+                 (.doc doc-id)
+                 (.get "body"))]
+    (->> (.getBestTextFragments highlighter token-stream text false 10)
+         (filter (fn [^TextFragment frag]
+                   (and (some? frag)
+                        (pos? (.getScore frag)))))
+         (map str)
+         (string/join "..."))))
+
+
 (defn search
   [^String q]
   (with-open [dir (FSDirectory/open (fs/path (lucene-dir)))
@@ -104,10 +125,12 @@
           query (.parse query-parser q)
           ]
       (mapv (fn [^ScoreDoc score-doc]
-              (let [doc (.doc searcher (.-doc score-doc))]
+              (let [doc-id (.-doc score-doc)
+                    doc (.doc searcher doc-id)]
                 {:score (.-score score-doc)
                  :path (.get doc "path")
-                 :title (.get doc "title")}))
+                 :title (.get doc "title")
+                 :summary-html (summarize doc-id query searcher)}))
             (-> searcher
                 (.search query 20)
                 (.-scoreDocs))))))

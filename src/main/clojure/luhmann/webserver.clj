@@ -75,8 +75,9 @@
                      (if (seq results)
                        (into [:div]
                              (for [result results]
-                               [:div
-                                [:a {:href (:path result)} (:title result)]]))
+                               [:div.searchResult
+                                [:a {:href (:path result)} (:title result)]
+                                [:div (hiccup/raw (:summary-html result))]]))
                        [:div "No results"])]]]))}))
 
 
