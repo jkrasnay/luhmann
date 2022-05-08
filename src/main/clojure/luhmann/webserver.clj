@@ -9,6 +9,7 @@
     [luhmann.watcher :as watcher]
     [org.httpkit.server :refer [as-channel run-server send!]]
     [ring.middleware.file :refer [wrap-file]]
+    [ring.middleware.resource :refer [wrap-resource]]
     [ring.middleware.params :refer [wrap-params]])
   (:import
     [java.io File]
@@ -122,24 +123,6 @@
 
 
 ;;============================================================
-;; Resources
-;;
-
-(def public-resources
-  ["luhmann.css"
-   "luhmann.js"])
-
-(defn copy-resources
-  []
-  (doseq [resource public-resources]
-    (let [dest (fs/file (luhmann/site-dir) resource)]
-      (fs/create-dirs (fs/parent dest))
-      (io/copy (io/input-stream (io/resource (str "public/" resource))) dest))))
-
-#_(copy-resources)
-
-
-;;============================================================
 ;; Web Server
 ;;
 
@@ -171,9 +154,9 @@
 (defn start
   [config]
   (stop)
-  (copy-resources)
   (reset! server (run-server (-> #'handler
                                  (wrap-file (luhmann/site-dir))
+                                 (wrap-resource "public")
                                  (wrap-chrome)
                                  (wrap-params))
                              {:port (:port config)})))
