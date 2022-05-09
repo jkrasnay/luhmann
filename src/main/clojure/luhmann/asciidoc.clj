@@ -6,7 +6,7 @@
     [luhmann.log :as log]
     [luhmann.watcher :as watcher])
   (:import
-    [org.asciidoctor Asciidoctor$Factory Options]))
+    [org.asciidoctor Asciidoctor$Factory Options SafeMode]))
 
 (defonce asciidoctor (atom nil))
 
@@ -14,6 +14,7 @@
   [dest-file]
   (doto (Options.)
     (.setMkDirs true)
+    (.setSafe SafeMode/UNSAFE)
     (.setToFile (str dest-file))))
 
 
