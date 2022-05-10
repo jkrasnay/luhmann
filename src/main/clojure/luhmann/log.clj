@@ -2,20 +2,20 @@
   (:require
     [luhmann.core :as luhmann])
   (:import
-    [ch.qos.logback.classic Level Logger]
+    [ch.qos.logback.classic Level Logger LoggerContext]
     [ch.qos.logback.classic.encoder PatternLayoutEncoder]
     [ch.qos.logback.core.rolling RollingFileAppender TimeBasedRollingPolicy]
     [org.slf4j LoggerFactory]))
 
 
-(def log (LoggerFactory/getLogger "luhmann"))
+(def ^Logger log (LoggerFactory/getLogger "luhmann"))
 
 (defn error
-  [msg ^Throwable t]
+  [^String msg ^Throwable t]
   (.error log msg t))
 
 (defn info
-  [msg & args]
+  [^String msg & args]
   (.info log msg (into-array (map str args))))
 
 
@@ -23,10 +23,11 @@
 ;; Configure
 ;;
 
+
 (defn configure
   [_config]
   ;; Props to https://akhikhl.wordpress.com/2013/07/11/programmatic-configuration-of-slf4jlogback/
-  (let [context (doto (LoggerFactory/getILoggerFactory)
+  (let [context (doto ^LoggerContext (LoggerFactory/getILoggerFactory)
                   (.reset))
 
         encoder (doto (PatternLayoutEncoder.)

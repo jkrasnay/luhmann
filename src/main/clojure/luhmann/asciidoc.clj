@@ -6,11 +6,23 @@
     [luhmann.log :as log]
     [luhmann.watcher :as watcher])
   (:import
-    [org.asciidoctor Asciidoctor$Factory Options SafeMode]))
+    [org.asciidoctor Asciidoctor Asciidoctor$Factory Options SafeMode]))
 
 (defonce asciidoctor (atom nil))
 
+
+(defn replace-ext
+  [path new-ext]
+  (-> path
+      fs/split-ext
+      first
+      (str "." new-ext)))
+
+#_(replace-ext "foo/bar/baz.adoc" "html")
+
+
 (defn options
+  ^Options
   [dest-file]
   (doto (Options.)
     (.setMkDirs true)
@@ -18,33 +30,38 @@
     (.setToFile (str dest-file))))
 
 
-(defn convert-file
-  ([path]
-   (convert-file path @asciidoctor (luhmann/root-dir) (luhmann/site-dir)))
-  ([path asciidoctor root-dir site-dir]
-   (when-not (string/starts-with? path luhmann/luhmann-dir-prefix)
-     (let [src (fs/file root-dir path)]
-       (if (.endsWith path ".adoc")
-         (let [dest (fs/file site-dir (string/replace path #".adoc$" ".html"))]
-           (log/info "Converting file {}" path)
-           (.convertFile asciidoctor src (options dest)))
-         (let [dest (fs/file site-dir path)]
-           (log/info "Copying file {}" path)
-           (fs/create-dirs (fs/parent dest))
-           (fs/copy src dest {:replace-existing true})))))))
+(defn convert-file!
+  [rel-path]
+  (let [src (fs/file (luhmann/root-dir) rel-path)]
+    (if (= "adoc" (fs/extension rel-path))
+      (let [dest (fs/file (luhmann/site-dir) (replace-ext rel-path "html"))]
+        (log/info "Converting file {}" rel-path)
+        (.convertFile ^Asciidoctor @asciidoctor
+                      src
+                      (options dest)))
+      (let [dest (fs/file (luhmann/site-dir) rel-path)]
+        (log/info "Copying file {}" rel-path)
+        (fs/create-dirs (fs/parent dest))
+        (fs/copy src dest {:replace-existing true})))))
 
 
-(defn build-site
-  ([]
-   (build-site (luhmann/root-dir) (luhmann/site-dir)))
-  ([root-dir site-dir]
-   (log/info "Building site in {}" site-dir)
-   (println "Rebuilding web site")
-   (fs/delete-tree site-dir)
-   (->> (fs/glob root-dir "**")
-        (filter #(not (fs/directory? %)))
-        (map #(convert-file (str (fs/relativize root-dir %))))
-        doall)))
+(defn find-files
+  [root-dir exclude-dir]
+  (->> (fs/glob root-dir "**")
+       (remove #(or (fs/directory? %)
+                    (fs/starts-with? % exclude-dir)))
+       (map #(str (fs/relativize root-dir %)))))
+
+#_(find-files "example" "example/.luhmann")
+
+(defn build-site!
+  []
+  (let [site-dir (luhmann/site-dir)]
+    (log/info "Building site in {}" site-dir)
+    (println "Rebuilding web site")
+    (fs/delete-tree site-dir)
+    (doseq [rel-path (find-files (luhmann/root-dir) (luhmann/luhmann-dir))]
+      (convert-file! rel-path))))
 
 
 ;;============================================================
@@ -54,7 +71,7 @@
 (defn stop
   []
   (when @asciidoctor
-    (.shutdown @asciidoctor)
+    (.shutdown ^Asciidoctor @asciidoctor)
     (reset! asciidoctor nil)))
 
 
@@ -62,8 +79,8 @@
   [_config]
   (stop)
   (reset! asciidoctor (Asciidoctor$Factory/create))
-  (.requireLibrary @asciidoctor (into-array ["asciidoctor-diagram"]))
-  (build-site))
+  (.requireLibrary ^Asciidoctor @asciidoctor (into-array ["asciidoctor-diagram"]))
+  (build-site!))
 
 
 ;;============================================================
@@ -73,5 +90,17 @@
 (watcher/reg-listener
   :asciidoc
   (fn [{:keys [event path]}]
-    (when (#{:create :modify} event)
-      (convert-file path))))
+    (let [src (fs/path (luhmann/root-dir) path)]
+      (when-not (fs/starts-with? src (luhmann/luhmann-dir))
+        (cond
+
+          (#{:create :modify} event)
+          (convert-file! path)
+
+          (= :delete event)
+          (let [dest (fs/path (luhmann/site-dir)
+                              (if (= "adoc" (fs/extension path))
+                                (replace-ext path "html")
+                                path))]
+            (log/info "Deleting {}" dest)
+            (fs/delete dest)))))))

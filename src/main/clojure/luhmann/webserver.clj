@@ -1,7 +1,6 @@
 (ns luhmann.webserver
   (:require
     [babashka.fs :as fs]
-    [clojure.java.io :as io]
     [clojure.string :as string]
     [hiccup2.core :as hiccup]
     [luhmann.core :as luhmann]
@@ -175,5 +174,5 @@
   :webserver
   (fn [{:keys [event path]}]
     (when (and (#{:create :modify} event)
-               (luhmann/site-path? path))
+               (fs/starts-with? (fs/path (luhmann/root-dir) path) (luhmann/site-dir)))
       (reload-browser))))

@@ -9,6 +9,8 @@
     [luhmann.webserver :as webserver])
   [:gen-class])
 
+(set! *warn-on-reflection* true)
+
 (defonce running (atom false))
 
 (defn stop
@@ -51,7 +53,7 @@
                 arguments
                 summary
                 errors]} (parse-opts args cli-options)
-        root-path (first arguments)
+        root-path ^String (first arguments)
         root-dir (when root-path
                    (java.io.File. root-path))]
     (cond

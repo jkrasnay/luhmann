@@ -16,8 +16,6 @@
     [org.apache.lucene.store FSDirectory]
     [org.jsoup Jsoup]))
 
-(set! *warn-on-reflection* true)
-
 (defn lucene-dir
   []
   (str (fs/path (luhmann/luhmann-dir) "lucene")))
@@ -47,7 +45,7 @@
   "Indexes a file with the given relative path.
   "
   [^String rel-path]
-  (if (string/ends-with? (str rel-path) ".html")
+  (if (= "html" (fs/extension rel-path))
     (locking writer-lock
       (log/info "Indexing {}" rel-path)
       (let [config (-> (IndexWriterConfig.)
@@ -83,7 +81,7 @@
   "Deletes a file with the given relative path from the index.
   "
   [^String rel-path]
-  (when (string/ends-with? (str rel-path) ".html")
+  (when (= "html" (fs/extension rel-path))
     (locking writer-lock
       (log/info "Deleting {} from the index" rel-path)
       (let [config (-> (IndexWriterConfig.)
@@ -145,6 +143,9 @@
 (watcher/reg-listener
   :lucene
   (fn [{:keys [event path]}]
-    (if (= :delete event)
-      (delete-file (luhmann/site-rel-path path))
-      (index-file (luhmann/site-rel-path path)))))
+    (let [full-path (fs/path (luhmann/root-dir) path)]
+      (when (fs/starts-with? full-path (luhmann/site-dir))
+        (let [rel-path (str (fs/relativize (luhmann/site-dir) full-path))]
+          (if (= :delete event)
+            (delete-file rel-path)
+            (index-file rel-path)))))))
