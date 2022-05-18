@@ -33,8 +33,8 @@
         content (some-> doc
                         (.getElementById "content")
                         (.text))]
-    {:title (.title doc)
-     :body content}))
+    {:title (or (.title doc) "Luhmann")
+     :body (or content "(unknown)")}))
 
 #_(parse-html (fs/path (luhmann/site-dir) "index.html"))
 
