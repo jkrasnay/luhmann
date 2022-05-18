@@ -2,12 +2,44 @@
 
 :root {
   /* See https://tailwindcolor.com/ */
-  --banner-bg: #292524; /* warm gray 800 */
-  --banner-fg: #E7E5E4; /* warm gray 200 */
+  --banner-bg: #D4D4D4; /* true gray 300 */
+  --banner-fg: #525252; /* true gray 600 */
 }
 
-body { margin: 0; }
-form { margin: 0; }
+
+/*------------- Asciidoctor Default Overrides -------------*/
+
+body {
+  font-family: "Source Serif 4", serif;
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6, #header > h1:only-child {
+  border: none;
+  color: black;
+  font-family: "Source Serif 4", serif;
+  font-weight: 500;
+}
+
+.admonitionblock td.content > .title, .audioblock > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .stemblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, table.tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title {
+  font-family: "Source Serif 4", serif;
+}
+
+#footer {
+  background: none;
+}
+
+#footer-text {
+  color: inherit;
+}
+
+
+/*------------- Luhmann Chrome -------------*/
+
+/* Provided by Asciidoctor inline, but here also for the search page */
+*, ::before, ::after {
+  box-sizing: border-box;
+}
 
 .banner {
   background-color: var(--banner-bg);
@@ -17,7 +49,7 @@ form { margin: 0; }
   align-items: center;
   flex-direction: row;
 
-  padding: 16px;
+  padding: 8px 12px;
 }
 
 .banner .logo {
@@ -31,13 +63,17 @@ form { margin: 0; }
 }
 
 .banner input {
-  background-color: var(--banner-fg);
-  color: var(--banner-bg);
+  background-color: white;
+  color: var(--banner-fg);
 
   border: none;
   border-radius: 8px;
 
-  padding: 8px 12px;
+  font-family: "Source Serif 4", serif;
+  font-size: 100%;
+
+  padding: 6px 12px;
+  width: 300px;
 }
 
 #header, #content, #footer {
@@ -56,3 +92,4 @@ form { margin: 0; }
   font-weight: bold;
 }
 
+form { margin: 0; }
