@@ -94,6 +94,18 @@
                             [:input {:name "q"}]]]])))
 
 
+(def luhmann-chrome-html
+  (str (hiccup/html [:div {:class "luh-outer"}
+                     [:div {:class "luh-header"}
+                      [:div {:class "luh-logo"}
+                       [:a {:href "/"} "Luhmann"]]
+                      [:div [:form {:method "GET"
+                                    :action "/search"}
+                             [:input {:name "q"}]]]]
+                     [:div {:class "luh-body"}
+                      [:div {:class "luh-inner"}]]])))
+
+
 (defn wrap-chrome*
   [handler req]
   (let [resp (handler req)
@@ -103,11 +115,14 @@
       (if-let [doc (cond
                      (instance? File body) (Jsoup/parse ^File body "utf-8")
                      (instance? String body) (Jsoup/parse ^String body))]
-        (do
+        (let [body-children (-> doc .body .children)]
           (-> doc .head (.append "<link rel='stylesheet' href='/luhmann.css'>"))
           (-> doc .head (.append "<link rel='preconnect' href='https://fonts.googleapis.com'>"))
           (-> doc .head (.append "<link href='https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,500;1,400;1,500&display=swap' rel='stylesheet'>"))
-          (-> doc .body (.prepend banner-html))
+          ;(-> doc .body (.prepend banner-html))
+          (-> doc .body (.prepend luhmann-chrome-html))
+          (let [luh-inner (.selectFirst doc ".luh-inner")]
+            (.appendChildren luh-inner body-children))
           (-> doc .head (.append "<script src='/luhmann.js'></script>"))
           (assoc resp :body (.outerHtml doc)))
         resp)
