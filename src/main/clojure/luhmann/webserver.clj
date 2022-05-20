@@ -85,25 +85,28 @@
 ;; Chrome
 ;;
 
-(def banner-html
-  (str (hiccup/html [:div {:class "banner"}
-                     [:div {:class "logo"}
-                      [:a {:href "/"} "Luhmann"]]
-                     [:div [:form {:method "GET"
-                                   :action "/search"}
-                            [:input {:name "q"}]]]])))
-
-
 (def luhmann-chrome-html
-  (str (hiccup/html [:div {:class "luh-outer"}
-                     [:div {:class "luh-header"}
-                      [:div {:class "luh-logo"}
+  (str (hiccup/html [:div.luh-outer
+                     [:div.luh-header
+                      [:a {:href "/"}
+                       [:svg.luh-logo {:xmlns "http://www.w3.org/2000/svg"
+                                       :viewBox "0 0 24 24"}
+                        [:path {:d "M20 3H4a2 2 0 0 0-2 2v2a2 2 0 0 0 1 1.72V19a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.72A2 2 0 0 0 22 7V5a2 2 0 0 0-2-2zM4 5h16v2H4zm1 14V9h14v10z"}]
+                        [:path {:d "M8 11h8v2H8z"}]]]
+                      [:div.luh-brand
                        [:a {:href "/"} "Luhmann"]]
-                      [:div [:form {:method "GET"
-                                    :action "/search"}
-                             [:input {:name "q"}]]]]
-                     [:div {:class "luh-body"}
-                      [:div {:class "luh-inner"}]]])))
+                      [:div.luh-spacer]
+                      [:div.luh-search
+                       [:form {:method "GET"
+                               :action "/search"}
+                        [:input {:name "q"}]]
+                       [:svg {:xmlns "http://www.w3.org/2000/svg"
+                              :viewBox "0 0 24 24"}
+                        [:path {:d "M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"}]]]]
+                     [:div.luh-body
+                      [:div.luh-inner]]])))
+
+
 
 
 (defn wrap-chrome*

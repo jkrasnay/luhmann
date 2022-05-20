@@ -2,8 +2,9 @@
 
 :root {
   /* See https://tailwindcolor.com/ */
-  --banner-bg: #D4D4D4; /* true gray 300 */
-  --banner-fg: #525252; /* true gray 600 */
+  --banner-bg:   #D4D4D4; /* true gray 300 */
+  --banner-fg:   #525252; /* true gray 600 */
+  --search-icon: #A3A3A3; /* true gray 400 */
 }
 
 
@@ -69,16 +70,36 @@ h1, h2, h3, h4, h5, h6, #header > h1:only-child {
 }
 
 .luh-logo {
-  flex: auto;
+  width: 24px;
+  height: 24px;
+  fill: var(--banner-fg);
+  margin-right: 8px;
+}
+
+.luh-brand {
   font-size: 28px;
 }
 
-.luh-logo a {
+.luh-brand a {
   color: var(--banner-fg);
   text-decoration: none;
 }
 
-.luh-header input {
+@media (max-width: 600px) {
+  .luh-brand {
+    display: none;
+  }
+}
+
+.luh-spacer {
+  flex: auto;
+}
+
+.luh-search {
+  position: relative;
+}
+
+.luh-search input {
   background-color: white;
   color: var(--banner-fg);
 
@@ -88,8 +109,19 @@ h1, h2, h3, h4, h5, h6, #header > h1:only-child {
   font-family: "Source Serif 4", serif;
   font-size: 100%;
 
-  padding: 6px 12px;
+  padding: 6px 40px 6px 12px;
   width: 300px;
+}
+
+.luh-search svg {
+  width: 24px;
+  height: 24px;
+
+  fill: var(--search-icon);
+
+  position: absolute;
+  right: 6px;
+  top: 8px;
 }
 
 .luh-body {
