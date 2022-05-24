@@ -3,6 +3,7 @@
     [babashka.fs :as fs]
     [clojure.string :as string]
     [hiccup2.core :as hiccup]
+    [luhmann.api :as api]
     [luhmann.core :as luhmann]
     [luhmann.lucene :as lucene]
     [luhmann.watcher :as watcher]
@@ -157,6 +158,9 @@
 
     (= "/search" (:uri req))
     (search-handler req)
+
+    (string/starts-with? (:uri req) "/api")
+    (api/api-handler req)
 
     :else
     {:status 404
