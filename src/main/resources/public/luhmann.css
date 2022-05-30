@@ -145,3 +145,22 @@ h1, h2, h3, h4, h5, h6, #header > h1:only-child {
 }
 
 form { margin: 0; }
+
+#luh-toast {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding-top: 24px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.luh-toast-inner {
+  background-color: #999;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px 0 rgb(0 0 0 / 0.1);
+  color: white;
+  padding: 12px 16px;
+}

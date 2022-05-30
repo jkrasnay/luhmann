@@ -7,6 +7,25 @@ function focusSearch () {
     input.select();
 }
 
+function hideToast() {
+    var toast = document.getElementById('luh-toast');
+    if (toast) {
+        toast.remove();
+    }
+}
+
+function showToast(text) {
+    hideToast();
+    var toast = document.createElement('div');
+    toast.id = 'luh-toast';
+    var inner = document.createElement('div');
+    inner.className = 'luh-toast-inner';
+    inner.appendChild(document.createTextNode(text));
+    toast.appendChild(inner);
+    document.body.appendChild(toast);
+    setTimeout(hideToast, 1000);
+}
+
 function keyListener (e) {
     if (e.target.tagName === 'BODY') {
         if (e.key === '/') {
@@ -19,6 +38,7 @@ function keyListener (e) {
             } else {
                 var note = loc.replace(/^\//, '').replace(/html$/, 'adoc');
             }
+            showToast('Launching editor...');
             var xhr = new XMLHttpRequest();
             //xhr.addEventListener('load', reqListener);
             xhr.open('GET', '/api/edit?note=' + note);
