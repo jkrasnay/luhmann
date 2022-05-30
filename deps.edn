@@ -12,7 +12,6 @@
         org.asciidoctor/asciidoctorj {:mvn/version "2.5.2"}
         org.asciidoctor/asciidoctorj-diagram {:mvn/version "2.2.1"}
         org.clojure/clojure {:mvn/version "1.11.1"}
-        org.clojure/tools.cli {:mvn/version "1.0.206"}
         org.jsoup/jsoup {:mvn/version "1.14.3"}
         ring/ring-core {:mvn/version "1.9.5"}
         }

@@ -2,7 +2,6 @@
   (:require
     [babashka.fs :as fs]
     [clojure.edn :as edn]
-    [clojure.tools.cli :refer [parse-opts]]
     [luhmann.asciidoc :as asciidoc]
     [luhmann.core :as luhmann]
     [luhmann.log :as log]
@@ -43,61 +42,37 @@
 ;; CLI
 ;;
 
-(def cli-options
-  [["-p" "--port=PORT" "Web server port number"
-    :default 2022
-    :parse-fn #(Integer/parseInt %)
-    :validate [#(< 0 % 0x10000) "Must be a number between 0 and 65535"]]])
-
-
 (defn load-config
   [root-dir]
   (let [config-file (fs/file root-dir luhmann/config-file)]
     (if (fs/exists? config-file)
-      (do (println "Loading config file" config-file)
+      (do (println "Loading config file" (str config-file))
           (-> (slurp config-file)
               (edn/read-string)))
-      (do (println "Config file" config-file "not found")
+      (do (println "Config file" (str config-file) "not found")
           nil))))
 
 
 (defn -main
   [& args]
-  (let [{:keys [options
-                arguments
-                summary
-                errors]} (parse-opts args cli-options)
-        root-path ^String (first arguments)
-        root-dir (when root-path
-                   (java.io.File. root-path))]
+  (let [root-dir (first args)]
     (cond
 
-      (seq errors)
-      (do (doseq [e errors]
-            (println e))
-          (println)
-          (println "Supported options:")
-          (println)
-          (println summary))
-
       (nil? root-dir)
-      (do (println "Usage: java -jar luhmann.jar (options) root-dir")
-          (println)
-          (println "Supported options:")
-          (println)
-          (println summary))
+      (println "Usage: java -jar luhmann.jar root-dir")
 
-      (not (.exists root-dir))
-      (println "Directory" root-path "does not exist")
+      (not (fs/exists? root-dir))
+      (println "Directory" root-dir "does not exist")
 
-      (not (.isDirectory root-dir))
-      (println root-path "is not a directory")
+      (not (fs/directory? root-dir))
+      (println root-dir "is not a directory")
 
       :else
-      (let [config (merge (load-config root-dir)
-                          (select-keys options [:path])
-                          {:root-dir (.getCanonicalPath root-dir)})]
-        (println "Starting Luhmann in" (.getCanonicalPath root-dir))
+      (let [root-dir (str (fs/canonicalize root-dir))
+            config (merge {:port 2022}
+                          (load-config root-dir)
+                          {:root-dir root-dir})]
+        (println "Starting Luhmann in" root-dir)
         (println "Config:" (pr-str config))
         (start config)
         (println (str "Luhmann started at http://localhost:" (:port config)))))))
