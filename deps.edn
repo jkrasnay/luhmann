@@ -1,6 +1,7 @@
 {:paths ["src/main/clojure" "src/main/resources"]
 
  :deps {babashka/fs {:mvn/version "0.1.4"}
+        babashka/process {:mvn/version "0.1.2"}
         ch.qos.logback/logback-classic {:mvn/version "1.2.11"}
         cheshire/cheshire {:mvn/version "5.10.2"}
         io.methvin/directory-watcher {:mvn/version "0.15.1"}

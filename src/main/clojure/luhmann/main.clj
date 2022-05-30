@@ -83,4 +83,5 @@
 #_
 (start {:root-dir "/Users/john/ws/luhmann/example"
         :luhmann-dir "/Users/john/ws/luhmann/example/.luhmann"
-        :port 2022})
+        :port 2022
+        :editor "nvim-qt"})
