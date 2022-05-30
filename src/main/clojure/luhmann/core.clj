@@ -18,7 +18,7 @@
   "Returns the directory where Luhmann keeps its files.
   "
   []
-  (str (root-dir) "/.luhmann"))
+  (:luhmann-dir @config))
 
 
 (defn site-dir

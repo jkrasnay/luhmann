@@ -69,7 +69,8 @@
 
       :else
       (let [root-dir (str (fs/canonicalize root-dir))
-            config (merge {:port 2022}
+            config (merge {:port 2022
+                           :luhmann-dir (str (fs/path root-dir ".luhmann"))}
                           (load-config root-dir)
                           {:root-dir root-dir})]
         (println "Starting Luhmann in" root-dir)
@@ -80,4 +81,6 @@
 #_
 (stop)
 #_
-(start {:root-dir "/Users/john/ws/luhmann/example" :port 2022})
+(start {:root-dir "/Users/john/ws/luhmann/example"
+        :luhmann-dir "/Users/john/ws/luhmann/example/.luhmann"
+        :port 2022})
