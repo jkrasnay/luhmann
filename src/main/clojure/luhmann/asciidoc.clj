@@ -33,12 +33,19 @@
 (defn convert-file!
   [rel-path]
   (let [src (fs/file (luhmann/root-dir) rel-path)]
-    (if (= "adoc" (fs/extension rel-path))
+    (cond
+
+      (= luhmann/config-file (str rel-path))
+      (log/info "Skipping config file")
+
+      (= "adoc" (fs/extension rel-path))
       (let [dest (fs/file (luhmann/site-dir) (replace-ext rel-path "html"))]
         (log/info "Converting file {}" rel-path)
         (.convertFile ^Asciidoctor @asciidoctor
                       src
                       (options dest)))
+
+      :else
       (let [dest (fs/file (luhmann/site-dir) rel-path)]
         (log/info "Copying file {}" rel-path)
         (fs/create-dirs (fs/parent dest))

@@ -1,5 +1,7 @@
 (ns luhmann.main
   (:require
+    [babashka.fs :as fs]
+    [clojure.edn :as edn]
     [clojure.tools.cli :refer [parse-opts]]
     [luhmann.asciidoc :as asciidoc]
     [luhmann.core :as luhmann]
@@ -47,6 +49,18 @@
     :parse-fn #(Integer/parseInt %)
     :validate [#(< 0 % 0x10000) "Must be a number between 0 and 65535"]]])
 
+
+(defn load-config
+  [root-dir]
+  (let [config-file (fs/file root-dir luhmann/config-file)]
+    (if (fs/exists? config-file)
+      (do (println "Loading config file" config-file)
+          (-> (slurp config-file)
+              (edn/read-string)))
+      (do (println "Config file" config-file "not found")
+          nil))))
+
+
 (defn -main
   [& args]
   (let [{:keys [options
@@ -80,11 +94,15 @@
       (println root-path "is not a directory")
 
       :else
-      (do
+      (let [config (merge (load-config root-dir)
+                          (select-keys options [:path])
+                          {:root-dir (.getCanonicalPath root-dir)})]
         (println "Starting Luhmann in" (.getCanonicalPath root-dir))
-        (start {:root-dir (.getCanonicalPath root-dir)
-                :port (:port options)})
-        (println (str "Luhmann started at http://localhost:" (:port options)))))))
+        (println "Config:" (pr-str config))
+        (start config)
+        (println (str "Luhmann started at http://localhost:" (:port config)))))))
 
+#_
+(stop)
 #_
 (start {:root-dir "/Users/john/ws/luhmann/example" :port 2022})

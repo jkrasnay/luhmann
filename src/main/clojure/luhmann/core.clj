@@ -1,5 +1,8 @@
 (ns luhmann.core)
 
+(def config-file ".luhmann.edn")
+
+
 ;; Config as of the last system start
 (defonce config (atom nil))
 
