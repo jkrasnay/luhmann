@@ -1,6 +1,16 @@
 var socket = new WebSocket(location.origin.replace(/^http/, 'ws') + '/ws');
 socket.addEventListener('message', function (event) { window.location.reload(); });
 
+function currentNote() {
+    var loc = location.pathname;
+    if (loc === '/') {
+        var note = 'index.adoc';
+    } else {
+        var note = loc.replace(/^\//, '').replace(/html$/, 'adoc');
+    }
+    return note;
+}
+
 function focusSearch () {
     var input = document.getElementsByName('q').item(0)
     input.focus();
@@ -28,21 +38,28 @@ function showToast(text) {
 
 function keyListener (e) {
     if (e.target.tagName === 'BODY') {
+
         if (e.key === '/') {
             e.preventDefault();
             focusSearch();
+
         } else if (e.key === 'e') {
-            var loc = location.pathname;
-            if (loc === '/') {
-                var note = 'index.adoc';
-            } else {
-                var note = loc.replace(/^\//, '').replace(/html$/, 'adoc');
-            }
             showToast('Launching editor...');
             var xhr = new XMLHttpRequest();
             //xhr.addEventListener('load', reqListener);
-            xhr.open('GET', '/api/edit?note=' + note);
+            xhr.open('GET', '/api/edit?note=' + currentNote());
             xhr.send();
+
+        } else if (e.key === 'y') {
+            console.log('copying xref');
+            var el = document.getElementById('luh-copy-input')
+            el.value = 'xref:' + currentNote() + '[' + document.title + ']';
+            console.log(el.value);
+            el.select();
+            el.setSelectionRange(0, 9999);
+            document.execCommand('copy');
+            el.blur();
+            showToast('Xref copied to clipboard');
         }
     }
 }
