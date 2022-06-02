@@ -37,7 +37,12 @@ function showToast(text) {
 }
 
 function keyListener (e) {
-    if (e.target.tagName === 'BODY') {
+
+    if (document.activeElement && e.key === 'Escape') {
+
+        document.activeElement.blur();
+
+    } else if (e.target.tagName === 'BODY') {
 
         if (e.key === '/') {
             e.preventDefault();
