@@ -51,10 +51,8 @@ function keyListener (e) {
             xhr.send();
 
         } else if (e.key === 'y') {
-            console.log('copying xref');
             var el = document.getElementById('luh-copy-input')
             el.value = 'xref:' + currentNote() + '[' + document.title + ']';
-            console.log(el.value);
             el.select();
             el.setSelectionRange(0, 9999);
             document.execCommand('copy');
