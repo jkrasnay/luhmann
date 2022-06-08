@@ -97,17 +97,17 @@
 (watcher/reg-listener
   :asciidoc
   (fn [{:keys [event path]}]
-    (let [src (fs/path (luhmann/root-dir) path)]
-      (when-not (fs/starts-with? src (luhmann/luhmann-dir))
+    (when-not (fs/starts-with? path (luhmann/luhmann-dir))
+      (let [rel-path (subs path (-> (luhmann/root-dir) count inc))]
         (cond
 
           (#{:create :modify} event)
-          (convert-file! path)
+          (convert-file! rel-path)
 
           (= :delete event)
           (let [dest (fs/path (luhmann/site-dir)
-                              (if (= "adoc" (fs/extension path))
-                                (replace-ext path "html")
-                                path))]
+                              (if (= "adoc" (fs/extension rel-path))
+                                (replace-ext rel-path "html")
+                                rel-path))]
             (log/info "Deleting {}" dest)
             (fs/delete dest)))))))

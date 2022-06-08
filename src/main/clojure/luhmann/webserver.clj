@@ -199,5 +199,5 @@
   :webserver
   (fn [{:keys [event path]}]
     (when (and (#{:create :modify} event)
-               (fs/starts-with? (fs/path (luhmann/root-dir) path) (luhmann/site-dir)))
+               (fs/starts-with? path (luhmann/site-dir)))
       (reload-browser))))

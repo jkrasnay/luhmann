@@ -143,9 +143,8 @@
 (watcher/reg-listener
   :lucene
   (fn [{:keys [event path]}]
-    (let [full-path (fs/path (luhmann/root-dir) path)]
-      (when (fs/starts-with? full-path (luhmann/site-dir))
-        (let [rel-path (str (fs/relativize (luhmann/site-dir) full-path))]
-          (if (= :delete event)
-            (delete-file rel-path)
-            (index-file rel-path)))))))
+    (when (fs/starts-with? path (luhmann/site-dir))
+      (let [rel-path (str (fs/relativize (luhmann/site-dir) path))]
+        (if (= :delete event)
+          (delete-file rel-path)
+          (index-file rel-path))))))
