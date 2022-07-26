@@ -46,7 +46,10 @@
                :headers {"Content-Type" "text/plain"}
                :body (str "Editor launched: " path)})
           (try (log/info "Launching editor {} {}" editor (str path))
-               (process [editor (str path)] {:dir root-dir})
+               (process (-> (string/split editor #"\s+")
+                            vec
+                            (conj (str path)))
+                        {:dir root-dir})
                {:status 200
                 :headers {"Content-Type" "text/plain"}
                 :body (str "Editor launched: " path)}
