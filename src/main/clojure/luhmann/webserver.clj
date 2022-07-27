@@ -121,6 +121,7 @@
                      (instance? File body) (Jsoup/parse ^File body "utf-8")
                      (instance? String body) (Jsoup/parse ^String body))]
         (let [body-children (-> doc .body .children)]
+          (-> doc .head (.append "<link rel='icon' href='/favicon.svg'>"))
           (-> doc .head (.append "<link rel='stylesheet' href='/luhmann.css'>"))
           (-> doc .head (.append "<link rel='preconnect' href='https://fonts.googleapis.com'>"))
           (-> doc .head (.append "<link href='https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,500;1,400;1,500&display=swap' rel='stylesheet'>"))
