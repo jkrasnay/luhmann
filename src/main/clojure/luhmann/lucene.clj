@@ -7,7 +7,7 @@
     [luhmann.watcher :as watcher]
     )
   (:import
-    [org.apache.lucene.analysis.standard StandardAnalyzer]
+    [org.apache.lucene.analysis.en EnglishAnalyzer]
     [org.apache.lucene.document Document Field$Store StringField TextField]
     [org.apache.lucene.index DirectoryReader IndexWriter IndexWriterConfig IndexWriterConfig$OpenMode Term]
     [org.apache.lucene.queryparser.classic MultiFieldQueryParser]
@@ -48,7 +48,7 @@
   (if (= "html" (fs/extension rel-path))
     (locking writer-lock
       (log/info "Indexing {}" rel-path)
-      (let [config (-> (IndexWriterConfig.)
+      (let [config (-> (IndexWriterConfig. (EnglishAnalyzer.))
                        (.setOpenMode IndexWriterConfig$OpenMode/CREATE_OR_APPEND))
             {:keys [title body]} (parse-html (fs/path (luhmann/site-dir) rel-path))
             doc (doto (Document.)
@@ -100,7 +100,7 @@
   [doc-id ^Query query ^IndexSearcher searcher]
   (let [formatter (SimpleHTMLFormatter.)
         highlighter (Highlighter. formatter (QueryScorer. query))
-        analyzer (StandardAnalyzer.)
+        analyzer (EnglishAnalyzer.)
         token-stream (TokenSources/getAnyTokenStream (.getIndexReader searcher) doc-id "body" analyzer)
         text (-> searcher
                  (.doc doc-id)
@@ -119,7 +119,7 @@
               reader (DirectoryReader/open dir)]
     (let [searcher (IndexSearcher. reader)
           ;; TODO maybe boost title a bit?
-          query-parser (MultiFieldQueryParser. (into-array ["title" "body"]) (StandardAnalyzer.))
+          query-parser (MultiFieldQueryParser. (into-array ["title" "body"]) (EnglishAnalyzer.))
           query (.parse query-parser q)
           ]
       (mapv (fn [^ScoreDoc score-doc]

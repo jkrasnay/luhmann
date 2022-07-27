@@ -8,6 +8,7 @@
         hiccup/hiccup {:mvn/version "2.0.0-alpha2"}
         http-kit/http-kit {:mvn/version "2.5.3"}
         org.apache.lucene/lucene-core {:mvn/version "9.1.0"}
+        org.apache.lucene/lucene-analysis-common {:mvn/version "9.1.0"}
         org.apache.lucene/lucene-highlighter {:mvn/version "9.1.0"}
         org.apache.lucene/lucene-queryparser {:mvn/version "9.1.0"}
         org.asciidoctor/asciidoctorj {:mvn/version "2.5.2"}
